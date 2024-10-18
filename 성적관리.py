@@ -12,6 +12,7 @@ def load_excel():
     grade_middle = pd.read_excel('Entity/성적_중간.xlsx').sort_values('학번')
     grade_attendance = pd.read_excel('Entity/성적_출석.xlsx').sort_values('학번')
 
+# 엑셀 인스턴스 개수확인
 def excel_row_count():
     # 엑셀 파일에 오타가 없다고 가정
     # 행의 수가 다른 엑셀 파일이 있으면 종료
@@ -38,8 +39,6 @@ def get_rate(attendance, grade):
             rate = 'F'
     return grade, rate
 
-
-
 rating = [] # 성적을 저장할 리스트
 load_excel()
 student_rows = excel_row_count()
@@ -64,9 +63,12 @@ for index in range(student_rows):
 
 # 0번 인덱스(이름)기준 오름차순 정렬
 rating.sort(key=lambda x:x[0])
-# 데이터프레임으로 변환 후 출력
+# 데이터프레임으로 변환 후 엑셀파일로 저장하고 출력
 df = pd.DataFrame(rating, columns=['Name', 'Num', 'Grade', 'Rate'])
-df.to_excel("Entity/최종 성적.xlsx")
+try:
+    df.to_excel("Entity/최종 성적.xlsx")
+except Exception as e:
+    print(f"파일 저장 실패: {e}")
 print(df)
 # A부터 오름차순으로 차트 출력
 sns.countplot(x='Rate',data=df, order=['A', 'B', 'C', 'D', 'F'])
